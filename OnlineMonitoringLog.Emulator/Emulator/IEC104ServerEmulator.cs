@@ -95,6 +95,8 @@ namespace Emulator
 
                 stepPositionObjects[i].Value = (stepPositionObjects[i].Value + 1) % 63;
 
+
+
                 if (newAsdu == null)
                     newAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
 

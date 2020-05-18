@@ -20,7 +20,8 @@ namespace CoAp_Server
         {
             InitializeComponent();
 
-            var sdf = new IEC104ServerEmulator();
+        //    var sdf = new IEC104ServerEmulator();
+           
             // create a new server
              server = new CoapServer();
 

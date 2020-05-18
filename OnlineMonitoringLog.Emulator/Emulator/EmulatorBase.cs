@@ -47,14 +47,14 @@ namespace Emulator
         }
         public EmulatorBase()
         {
-            _timer = new Timer(Timed, null, 0, 1000);
+            _timer = new Timer(Timed, null, 0, 500);
         
         }
 
         private void Timed(object state)
         {
-            InputWaterTemp = rnd.Next();
-            OutputWaterTemp = rnd.Next();
+            InputWaterTemp = rnd.Next(100);
+            OutputWaterTemp = rnd.Next(100);
         }
 
        

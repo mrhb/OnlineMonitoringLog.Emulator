@@ -29,85 +29,43 @@ namespace Emulator
             server.MaxQueueSize = 100;
 
             server.Start();
-
-      
-
-       
-                    ASDU newAsdu = null;
-
-     
-
-                  /* send step position objects */
-                    
-
-                    for (int i = 0; i < 2; i++)
-                    {
-
-                        stepPositionObjects[i].Value = (stepPositionObjects[i].Value + 1) % 63;
-
-                        if (newAsdu == null)
-                            newAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
-
-                        if (newAsdu.AddInformationObject(stepPositionObjects[i]) == false)
-                        {
-                            server.EnqueueASDU(newAsdu);
-                            newAsdu = null;
-                            i--;
-                        }
-                    }
-
-                    if (newAsdu != null)
-                        server.EnqueueASDU(newAsdu);
-
-
-
-
             ParamValueChanged += IEC104ServerEmulator_ParamValueChanged;
 
         }
 
         private void IEC104ServerEmulator_ParamValueChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            int val=new int();
+            int i= 0;
             switch (e.PropertyName)
             {
                 case "InputWaterTemp":
+                    val = InputWaterTemp;
+                    i = 0;
                     break;
 
                 case "OutputWaterTemp":
+                    val = OutputWaterTemp;
+                    i = 1;
                     break;
 
                 default:
                     break;
             }
-
-          
-
-
             ASDU newAsdu = null;
 
-
-
             /* send step position objects */
+            stepPositionObjects[i].Value = val;
+            stepPositionObjects[i].Timestamp = new CP56Time2a(DateTime.Now);
 
+              
+            newAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
 
-            for (int i = 0; i < 2; i++)
-            {
+            newAsdu.AddInformationObject(stepPositionObjects[i]);
+            server.EnqueueASDU(newAsdu);
+               
+          
 
-                stepPositionObjects[i].Value = (stepPositionObjects[i].Value + 1) % 63;
-                
-                if (newAsdu == null)
-                    newAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
-
-                if (newAsdu.AddInformationObject(stepPositionObjects[i]) == false)
-                {
-                    server.EnqueueASDU(newAsdu);
-                    newAsdu = null;
-                    i--;
-                }
-            }
-
-            if (newAsdu != null)
-                server.EnqueueASDU(newAsdu);
         }
     }
 }

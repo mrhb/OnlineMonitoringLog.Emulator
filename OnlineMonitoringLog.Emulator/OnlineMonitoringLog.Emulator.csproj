@@ -54,9 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Emulator\EmulatorBase.cs" />
+    <Compile Include="Emulator\IEC104ServerEmulatorBase.cs" />
     <Compile Include="Emulator\IEC104ServerEmulator.cs" />
-    <Compile Include="Emulator\Iemulator.cs" />
+    <Compile Include="Emulator\IEmulator.cs" />
     <Compile Include="Emulator\intParam.cs" />
     <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>

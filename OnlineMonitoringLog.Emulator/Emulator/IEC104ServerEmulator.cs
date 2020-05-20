@@ -11,48 +11,36 @@ using System.Threading;
 
 namespace Emulator
 {
-    class IEC104ServerEmulator:EmulatorBase
+    class IEC104ServerEmulator:IEC104ServerEmulatorBase
     {
+        private Timer Sendtimer;
         Server server = new Server();
+        ASDU floatdataAsdu;
         public  IEC104ServerEmulator()
         {
             /* Initialize data objects */
-
             server.DebugOutput = true;
             server.MaxQueueSize = 100;
 
             server.Start();
-            ParamValueChanged += IEC104ServerEmulator_ParamValueChanged;
+            floatdataAsdu =  new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.INTERROGATED_BY_STATION, false, false, 1, 1, false);
+           
 
+            ParamValueChanged += IEC104ServerEmulator_ParamValueChanged1;
+            Sendtimer = new Timer(sendTick, null, 0, 200);
         }
 
-        private void IEC104ServerEmulator_ParamValueChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void sendTick(object state)
         {
-            int val=new int();
-            int i= 0;
-            switch (e.PropertyName)
-            {
-                case "InputWaterTemp":
-                    val = InputWaterTemp;
-                    i = 0;
-                    break;
-
-                case "OutputWaterTemp":
-                    val = OutputWaterTemp;
-                    i = 1;
-                    break;
-
-                default:
-                    break;
-            }
-
-            ASDU floatdataAsdu = null;
-            var   FloatVariables = new MeasuredValueShortWithCP56Time2a(i, 0,
-            new QualityDescriptor(), new CP56Time2a(DateTime.Now));
-            FloatVariables.Value = val;
-            floatdataAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
-            floatdataAsdu.AddInformationObject(FloatVariables);
+            if (floatdataAsdu.NumberOfElements>0)
             server.EnqueueASDU(floatdataAsdu);
+            floatdataAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.INTERROGATED_BY_STATION, false, false, 1, 1, false);
+        }
+
+        private void IEC104ServerEmulator_ParamValueChanged1(object sender, ParamValueChangeEventArgs e)
+        {          
+            floatdataAsdu.AddInformationObject(e.FloatVariables);
+    
         }
     }
 }

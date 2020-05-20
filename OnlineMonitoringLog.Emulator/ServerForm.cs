@@ -20,23 +20,29 @@ namespace CoAp_Server
         {
             InitializeComponent();
 
-        //    var sdf = new IEC104ServerEmulator();
-           
+            #region IEC104
+
+            var iec104Server = new IEC104ServerEmulator();
+
+            #endregion
+
+            #region CoAP
             // create a new server
-             server = new CoapServer();
+            server = new CoapServer();
 
 
-             for (int i = 0; i < 3;i++ )
-             {
-                 server.Add(new TimeOfDayResource("TimeOfDay"+i.ToString()));
-             }
-                 // add the resource to share
-                 server.Add(new HelloWorldResource());
+            for (int i = 0; i < 3; i++)
+            {
+                server.Add(new TimeOfDayResource("TimeOfDay" + i.ToString()));
+            }
+            // add the resource to share
+            server.Add(new HelloWorldResource());
             server.Add(new TimeResource("ServerTime"));
             server.Add(new TimeOfDayResource("TimeOfDay"));
 
             // let the server fly
-            server.Start();
+            server.Start(); 
+            #endregion
         }
 
         private void ServerForm_Load(object sender, EventArgs e)

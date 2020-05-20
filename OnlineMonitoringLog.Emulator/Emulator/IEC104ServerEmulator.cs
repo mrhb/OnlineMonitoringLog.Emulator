@@ -14,16 +14,9 @@ namespace Emulator
     class IEC104ServerEmulator:EmulatorBase
     {
         Server server = new Server();
-        static StepPositionWithCP56Time2a[] stepPositionObjects = new StepPositionWithCP56Time2a[2] ;
-
         public  IEC104ServerEmulator()
         {
-          
             /* Initialize data objects */
-          
-            for (int i = 0; i < 2; i++)
-                stepPositionObjects[i] = new StepPositionWithCP56Time2a(10000 + i, 0, false,
-                    new QualityDescriptor(), new CP56Time2a());
 
             server.DebugOutput = true;
             server.MaxQueueSize = 100;
@@ -52,20 +45,14 @@ namespace Emulator
                 default:
                     break;
             }
-            ASDU newAsdu = null;
 
-            /* send step position objects */
-            stepPositionObjects[i].Value = val;
-            stepPositionObjects[i].Timestamp = new CP56Time2a(DateTime.Now);
-
-              
-            newAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
-
-            newAsdu.AddInformationObject(stepPositionObjects[i]);
-            server.EnqueueASDU(newAsdu);
-               
-          
-
+            ASDU floatdataAsdu = null;
+            var   FloatVariables = new MeasuredValueShortWithCP56Time2a(i, 0,
+            new QualityDescriptor(), new CP56Time2a(DateTime.Now));
+            FloatVariables.Value = val;
+            floatdataAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.PERIODIC, false, false, 1, 1, false);
+            floatdataAsdu.AddInformationObject(FloatVariables);
+            server.EnqueueASDU(floatdataAsdu);
         }
     }
 }

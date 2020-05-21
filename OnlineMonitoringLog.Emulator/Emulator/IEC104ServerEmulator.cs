@@ -33,8 +33,18 @@ namespace Emulator
         private void sendTick(object state)
         {
             if (floatdataAsdu.NumberOfElements>0)
-            server.EnqueueASDU(floatdataAsdu);
-            floatdataAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.INTERROGATED_BY_STATION, false, false, 1, 1, false);
+                try
+                {
+                    server.EnqueueASDU(floatdataAsdu);
+                    floatdataAsdu = new ASDU(server.GetApplicationLayerParameters(), CauseOfTransmission.INTERROGATED_BY_STATION, false, false, 1, 1, false);
+
+                }
+                catch (Exception c)
+                {
+
+                    Console.Write("Error in EnqueueASDU:  " + c.ToString());
+                }
+            
         }
 
         private void IEC104ServerEmulator_ParamValueChanged1(object sender, ParamValueChangeEventArgs e)

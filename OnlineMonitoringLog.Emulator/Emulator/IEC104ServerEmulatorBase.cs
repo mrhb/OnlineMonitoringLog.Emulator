@@ -222,7 +222,7 @@ namespace Emulator
         #endregion
         public IEC104ServerEmulatorBase()
         {
-            _timer = new Timer(Timed, null, 0, 500);
+            _timer = new Timer(Timed, null, 0, 1000);
         
         }    
 
